@@ -49,16 +49,6 @@ services:
     volumes:
       - redis-cache:/data
 
-  adminer:
-    image: adminer
-    restart: unless-stopped
-    container_name: db_adminer
-    ports:
-      - "8081:8080"
-    depends_on:
-      db:
-        condition: service_healthy
-
 volumes:
   postgres-data:
   redis-cache:
