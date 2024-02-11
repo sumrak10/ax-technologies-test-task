@@ -3,6 +3,8 @@
 
 Запуск проекта
 ```bash
+    git clone https://github.com/sumrak10/ax-technologies-test-task
+    cd ax-technologies-test-task
     docker-compose up
 ```
 
