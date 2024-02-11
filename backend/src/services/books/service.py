@@ -18,12 +18,12 @@ class BooksService:
                      isbn: str | None = None,
                      categories: list[str] | None = None,
                      ) -> list[BookAPISchema]:
-        if not any([gb_id, query, intitle, inauthor, isbn]) and len(categories) == 0:
+        if not any([gb_id, query, intitle, inauthor, isbn, categories]):
             raise exceptions.NotAcceptableHTTPException("At least one search parameter is required")
-        if gb_id is None and (not any([query, intitle, inauthor, isbn]) and len(categories) == 0):
+        if gb_id is None and (not any([query, intitle, inauthor, isbn, categories])):
             raise exceptions.NotAcceptableHTTPException("If gb_id is empty then at least one of the other parameters "
                                                         "must have a value")
-        if gb_id is not None and (any([query, intitle, inauthor, isbn]) and len(categories) != 0):
+        if gb_id is not None and (any([query, intitle, inauthor, isbn, categories])):
             raise exceptions.NotAcceptableHTTPException("If gb_id is passed, the remaining fields must be empty")
         return await GoogleBooksAPI.search(gb_id, query, intitle, inauthor, isbn, categories)
 
@@ -32,12 +32,12 @@ class BooksService:
                           uow: UnitOfWork,
                           current_user: UserDTO,
                           isbn: str,
-                          ) -> BookDTO:
+                          ) -> BookDTO | None:
         async with uow:
             book = await uow.books.get_one(ISBN=isbn)
             for category in book.categories.split(', '):
                 if category in current_user.excluded_categories:
-                    raise exceptions.NotAcceptableHTTPException("This category is excluded from the user's search")
+                    return None
             await uow.commit()
         return book
 

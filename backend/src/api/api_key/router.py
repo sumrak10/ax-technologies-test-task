@@ -48,9 +48,10 @@ async def create_api_token(
         **exceptions.ForbiddenHTTPException.docs(),
     })
 async def get_all_api_tokens(
+        session_: Annotated[SessionContextManager, Depends(SessionContextManager)],
         current_user=Depends(JWTService.get_current_user)
 ):
-    return await APIKeyService.get_all(current_user)
+    return await APIKeyService.get_all(session_, current_user)
 
 
 @router.delete(

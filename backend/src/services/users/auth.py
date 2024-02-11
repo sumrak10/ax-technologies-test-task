@@ -79,9 +79,9 @@ class APIKeyService(AbstractAuthService):
 
     @classmethod
     async def get_all(cls,
+                      session: SessionContextManager,
                       current_user: UserDTO,
                       ) -> list[UserAPIKeyDTO]:
-        session = SessionContextManager()
         async with session:
             user_api_keys_repo = UserAPIKeysRepository(session.session)
             user_api_keys = await user_api_keys_repo.get_all_with_filters(user_id=current_user.id)

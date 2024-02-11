@@ -83,7 +83,8 @@ class SQLAlchemyRepository(Generic[SchemaType], AbstractRepository):
     async def get_all_with_filters(self, **filter_by) -> list[SchemaType]:
         stmt = select(self.model).filter_by(**filter_by)
         res = await self.session.execute(stmt)
-        return [row[0].to_DTO() for row in res.all()]
+        res = res.all()
+        return [row[0].to_DTO() for row in res]
 
     async def delete(self, **filter_by) -> None:
         stmt = delete(self.model).filter_by(**filter_by)
